@@ -1,0 +1,31 @@
+[
+  {
+    "_id": "u101",
+    "fullname": "Muki Ja",
+    "username": "muki",
+    "password": "muki1234",
+    "score": 100,
+    "isAdmin": true
+  },
+  {
+    "_id": "u202",
+    "fullname": "Poki ja",
+    "username": "Poki",
+    "password": "pokpokPass",
+    "score": 80
+  },
+  {
+    "_id": "u303",
+    "fullname": "Juk hai",
+    "username": "Juk7",
+    "password": "noJukFound",
+    "score": 90
+  },
+  {
+    "_id": "u404",
+    "fullname": "why user",
+    "username": "why42",
+    "password": "4242",
+    "score": 95
+  }
+]
