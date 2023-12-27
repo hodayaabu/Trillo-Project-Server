@@ -1,6 +1,6 @@
 import fs from 'fs'
 
-export const loggerService = {
+export const logger = {
     debug(...args) { if (process.env.NODE_NEV === 'production') return doLog('DEBUG', ...args) },
     info(...args) { doLog('INFO', ...args) },
     warn(...args) { doLog('WARN', ...args) },

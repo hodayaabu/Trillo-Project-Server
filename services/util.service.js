@@ -62,3 +62,15 @@ function makeId(length = 5) {
     }
     return text
 }
+
+function errCatchWrapper(func) {  // ASK - Check if working
+    return () => {
+        try {
+            func()
+        } catch {
+            // logger.error(func.name, err)
+            console.log("hey hey", func.name, err)
+            throw err
+        }
+    }
+}

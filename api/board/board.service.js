@@ -1,5 +1,5 @@
 import { loggerService } from '../../services/logger.service.js'
-import { utilService } from './../../services/util.service.js';
+import { utilService } from '../../services/util.service.js';
 
 export const bugService = {
     query,

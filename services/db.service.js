@@ -1,5 +1,5 @@
 import mongoDB from 'mongodb'
-const { MongoClient } = mongoDB
+const { MongoClient } = mongoDB  // ASK - Can I do in oneliner?
 
 import { config } from '../config/index.js'
 import { logger } from './logger.service.js'
@@ -27,7 +27,7 @@ async function connect() {
         const client = await MongoClient.connect(config.dbURL)
         const db = client.db(config.dbName)
         dbConn = db
-        return db
+        return dbConn
     } catch (err) {
         logger.error('Cannot Connect to DB', err)
         throw err

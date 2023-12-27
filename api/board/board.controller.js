@@ -1,5 +1,5 @@
 // Bug CRUDL API
-import { bugService } from './bug.service.js';
+import { bugService } from './board.service.js';
 
 
 // List

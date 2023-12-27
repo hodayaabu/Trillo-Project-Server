@@ -4,19 +4,18 @@ import cors from 'cors'
 import path from 'path'
 import cookieParser from 'cookie-parser'
 
-import { bugRoutes } from './api/bug/bug.routes.js'
+import { logger } from './services/logger.service.js'
+import { setupAsyncLocalStorage } from './middlewares/setupAls.middleware.js'
+import { socketService } from './services/socket.service.js'
+
+import { boardRoutes } from './api/board/board.routes.js'
 import { userRoutes } from './api/user/user.routes.js'
 import { authRoutes } from './api/auth/auth.routes.js'
 
-import { logger } from './services/logger.service.js'
-import { setupAsyncLocalStorage } from './middlewares/setupAls.middleware.js'
-
-
 
 const app = express()
-const server = http.createServer(app)
+const server = http.createServer(app)  // ASK - Changes in the app will affect the server. How?
 const PORT = process.env.PORT || 3030
-
 
 if (process.env.NODE_ENV === 'production') {
     app.use(express.static(path.resolve('public')))  // ASK - path.resolve? How does it know about 'public'?
@@ -42,7 +41,7 @@ app.use(cookieParser())
 app.all('*', setupAsyncLocalStorage)  // ASK - Will it always keep searching for path if we have 'next'? Is it TRUE for regular paths too?
 
 // Routes
-app.use('/api/bug', bugRoutes)
+app.use('/api/board', boardRoutes)
 app.use('/api/user', userRoutes)
 app.use('/api/auth', authRoutes)
 
@@ -52,7 +51,7 @@ app.get('/**', (req, res) => {
 })
 
 // Socket setup
-setupSocketAPI(server)
+socketService.setupSocketAPI(server)
 
 // Listening port
 server.listen(PORT, () => {  // ASK - Should we define the PORT variable in the .env file?
