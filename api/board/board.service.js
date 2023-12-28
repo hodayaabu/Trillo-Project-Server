@@ -1,157 +1,86 @@
-import { loggerService } from '../../services/logger.service.js'
-import { utilService } from '../../services/util.service.js';
+import { logger } from "../../services/logger.service.js";
+import { utilService } from "../../services/util.service.js";
+import { dbService } from "../../services/db.service.js";
+import { ObjectId } from "mongodb";
 
-export const bugService = {
-    query,
-    getById,
-    remove,
-    save
+export const boardService = {
+  query,
+  getById,
+  remove,
+  add,
+  update,
+};
+
+const collectionName = "boards";
+
+// lIST-----LIST-----lIST-----LIST-----lIST-----LIST-----lIST-----LIST-----lIST-----LIST-----lIST-----LIST-----lIST-----LIST-----LIST
+async function query(filterBy = {}) {
+  try {
+    //   const criteria = _buildCriteria(filterBy);
+    //   const bugCursor = await collection.find(criteria);
+    const collection = await dbService.getCollection(collectionName);
+    const boards = await collection.find().toArray();
+
+    return boards;
+  } catch (err) {
+    logger.error("boardService[list] : ", err);
+    throw err;
+  }
 }
 
-var bugs = utilService.readJsonFile('./data/bug.json')
-const PAGE_SIZE = 3
+// GetByID-----GetByID-----GetByID-----GetByID-----GetByID-----GetByID-----GetByID-----GetByID-----GetByID-----GetByID-----GetByID-----GetByID
+async function getById(boardId) {
+  try {
+    const collection = await dbService.getCollection(collectionName);
+    const board = collection.findOne({ _id: new ObjectId(boardId) });
 
-async function query(filterBy = {}, sortBy = {}) {
-    try {
-        let bugsToReturn = [...bugs]
-
-        if (filterBy.title) {
-            const regExp = new RegExp(filterBy.title, 'i')
-            bugsToReturn = bugsToReturn.filter(bug => regExp.test(bug.title))
-        }
-
-        if (filterBy.severity) {
-            bugsToReturn = bugsToReturn.filter(bug => bug.severity >= filterBy.severity)
-        }
-
-        if (filterBy.labels.length !== 0) {
-            bugsToReturn = bugsToReturn.filter(item => {
-                return filterBy.labels.every(label => {
-                    return item.labels.includes(label)
-                })
-            })
-        }
-
-        if (filterBy.pageIdx !== undefined) {
-            const startIdx = filterBy.pageIdx * PAGE_SIZE
-            bugsToReturn = bugsToReturn.slice(startIdx, startIdx + PAGE_SIZE)
-        }
-
-        bugsToReturn = sortByField(bugsToReturn, sortBy)
-
-        return bugsToReturn
-
-    } catch (err) {
-        loggerService.error(err)
-        throw err
-    }
+    if (!board) throw `Couldnt find a board with id: ${bugId}`;
+    return board;
+  } catch (err) {
+    logger.error("boardService[getByID] : ", err);
+    throw err;
+  }
 }
 
-function sortByField(bugsToReturn, sortBy) {
-
-    var field = sortBy.fieldSort
-    if (field === 'title') {
-        bugsToReturn.sort((a, b) => {
-            let fa = a.title.toLowerCase(),
-                fb = b.title.toLowerCase();
-            const dir = sortBy.dir === "desc" ? -1 : 1
-            if (fa > fb) {
-                return -1 * dir;
-            }
-            if (fa < fb) {
-                return 1 * dir;
-            }
-            // if (sortBy.dir == "desc") {
-            //     if (fa > fb) {
-            //         return -1;
-            //     }
-            //     if (fa < fb) {
-            //         return 1;
-            //     }
-            // }
-            // else {
-            //     if (fa < fb) {
-            //         return -1;
-            //     }
-            //     if (fa > fb) {
-            //         return 1;
-            //     }
-            // }
-            return 0;
-        });
-
-    } else if (field === 'severity') {
-        bugsToReturn.sort((a, b) => {
-            if (sortBy.dir == "desc") {
-                return b.severity - a.severity;
-            } else {
-                return a.severity - b.severity;
-            }
-        });
-    } else if (field === 'createdAt') {
-        bugsToReturn.sort((a, b) => {
-            let da = new Date(a.createdAt),
-                db = new Date(b.createdAt);
-
-            if (sortBy.dir == "desc") {
-                return db - da;
-            } else {
-                return da - db;
-            }
-
-        });
-    }
-    return bugsToReturn
+// POST-----POST-----POST-----POST-----POST-----POST-----POST-----POST-----POST-----POST-----POST-----POST
+async function add(boardToAdd, loggedinUser) {
+  try {
+    const collection = await dbService.getCollection(collectionName);
+    await collection.insertOne(boardToAdd);
+    return boardToAdd;
+  } catch (er) {
+    loggerService.error("boardService[add] : ", err);
+    throw err;
+  }
 }
 
+// UPDATE-----UPDATE-----UPDATE-----UPDATE-----UPDATE-----UPDATE-----UPDATE-----UPDATE-----UPDATE-----UPDATE-----UPDATE-----UPDATE
+async function update(board, loggedinUser) {
+  try {
+    const collection = await dbService.getCollection(collectionName);
+    const fieldsToUpdate = { isStarred: board.isStarred };
 
-async function getById(bugId) {
-    try {
-        var bug = bugs.find(bug => bug._id === bugId)
-        if (!bug) throw `Couldn't find bug with _id ${bugId}`
-        return bug
-    } catch (err) {
-        loggerService.error(err)
-        throw (err)
-    }
+    await collection.updateOne(
+      { _id: new ObjectId(board._id) },
+      { $set: fieldsToUpdate }
+    );
+    return "Updated successfully";
+  } catch (err) {
+    loggerService.error("boardService[update] : ", err);
+    throw err;
+  }
 }
 
-async function remove(bugId) {
-    try {
-        const idx = bugs.findIndex(bug => bug._id === bugId)
-        if (idx === -1) throw `Couldn't find bug with _id ${bugId}`
-        bugs.splice(idx, 1)
-
-        utilService._saveListDataToFile('./data/bug.json', bugs)
-
-    } catch (err) {
-        loggerService.error(err)
-        throw err
-    }
-}
-
-async function save(bugToSave) {
-    try {
-        if (bugToSave._id) {
-            var idx = bugs.findIndex(bug => bug._id === bugToSave._id)
-            if (idx === -1) throw `Couldn't find bug with _id ${bugToSave._id}`
-            bugs.splice(idx, 1, bugToSave)
-        } else {
-            bugToSave._id = utilService.makeId()
-            bugToSave.createdAt = Date.now()
-            bugs.push(bugToSave)
-        }
-        await utilService._saveListDataToFile('./data/bug.json', bugs)
-        return bugToSave
-
-    } catch (err) {
-        loggerService.error(err)
-        throw err
-    }
-}
-
-function getSortFunction() {
-    return () => {
-
-    }
+// DELETE-----DELETE-----DELETE-----DELETE-----DELETE-----DELETE-----DELETE-----DELETE-----DELETE-----DELETE-----DELETE-----DELETE
+async function remove(boardId, loggedinUser) {
+  try {
+    const collection = await dbService.getCollection(collectionName);
+    const { deletedCount } = await collection.deleteOne({
+      _id: new ObjectId(boardId),
+    });
+    return deletedCount;
+  } catch (err) {
+    loggerService.error("boardService[Remove] : ", err);
+    throw err;
+  }
 }

@@ -1,35 +1,35 @@
-import mongoDB from 'mongodb'
-const { MongoClient } = mongoDB  // ASK - Can I do in oneliner?
+import mongoDB from "mongodb";
+const { MongoClient } = mongoDB; // ASK - Can I do in oneliner?
 
-import { config } from '../config/index.js'
-import { logger } from './logger.service.js'
+import { config } from "../config/index.js";
+import { logger } from "./logger.service.js";
 
 export const dbService = {
-    getCollection
-}
+  getCollection,
+};
 
-var dbConn = null
+var dbConn = null;
 
 async function getCollection(collectionName) {
-    try {
-        const db = await connect()
-        const collection = await db.collection(collectionName)
-        return collection
-    } catch (err) {
-        logger.error('Failed to get Mongo collection', err)
-        throw err
-    }
+  try {
+    const db = await connect();
+    const collection = await db.collection("boards");
+    return collection;
+  } catch (err) {
+    logger.error("Failed to get Mongo collection", err);
+    throw err;
+  }
 }
 
 async function connect() {
-    if (dbConn) return dbConn
-    try {
-        const client = await MongoClient.connect(config.dbURL)
-        const db = client.db(config.dbName)
-        dbConn = db
-        return dbConn
-    } catch (err) {
-        logger.error('Cannot Connect to DB', err)
-        throw err
-    }
+  if (dbConn) return dbConn;
+  try {
+    const client = await MongoClient.connect(config.dbURL);
+    const db = client.db(config.dbName);
+    dbConn = db;
+    return dbConn;
+  } catch (err) {
+    logger.error("Cannot Connect to DB", err);
+    throw err;
+  }
 }

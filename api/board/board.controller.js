@@ -1,86 +1,65 @@
-// Bug CRUDL API
-import { bugService } from './board.service.js';
+import { boardService } from "./board.service.js";
 
-
-// List
-export async function getBugs(req, res) {
-    try {
-        const filterBy = {
-            title: req.query.filterBy.title || '',
-            severity: +req.query.filterBy.severity || 0,
-            labels: req.query.filterBy.labels || [],
-            pageIdx: req.query.filterBy.pageIdx || undefined
-        }
-        const sortBy = {
-            fieldSort: req.query.sortBy.fieldSort || '',
-            dir: req.query.sortBy.dir || '',
-        }
-        const bugs = await bugService.query(filterBy, sortBy)
-        res.send(bugs)
-    } catch (err) {
-        res.status(400).send(`Couldn't get bugs`)
-    }
+// lIST-----LIST-----lIST-----LIST-----lIST-----LIST-----lIST-----LIST-----lIST-----LIST-----lIST-----LIST-----lIST-----LIST-----LIST
+export async function getBoards(req, res) {
+  try {
+    let filterBy = {};
+    const boards = await boardService.query(filterBy);
+    res.send(boards);
+  } catch (err) {
+    res.status(400).send("Failed to get boards");
+  }
 }
 
-// Get
-export async function getBug(req, res) {
-    const { bugId } = req.params
-
-    const visitedBugs = req.cookies.visitedBugs ? JSON.parse(req.cookies.visitedBugs) : []
-    try {
-        if (visitedBugs.length === 3 && !visitedBugs.includes(bugId)) {
-            console.log('User visited at the following bugs:', visitedBugs)
-            res.cookie('visitedBugs', JSON.stringify(visitedBugs), { maxAge: 1000 * 7 })
-            return res.status(401).send('Wait for a bit')
-        }
-        if (!visitedBugs.includes(bugId)) visitedBugs.push(bugId)
-
-        const bug = await bugService.getById(bugId)
-
-        res.cookie('visitedBugs', JSON.stringify(visitedBugs))
-        res.send(bug)
-    } catch (err) {
-        res.status(400).send(`Couldn't get bug`)
-    }
+// GetByID-----GetByID-----GetByID-----GetByID-----GetByID-----GetByID-----GetByID-----GetByID-----GetByID-----GetByID-----GetByID-----GetByID
+export async function getBoard(req, res) {
+  const { boardId } = req.params;
+  try {
+    const board = await boardService.getById(boardId);
+    res.send(board);
+  } catch (err) {
+    res.status(400).send("Couldn't get board" + err);
+  }
 }
 
-
-// // Delete
-export async function removeBug(req, res) {
-    const { bugId } = req.params
-
-    try {
-        await bugService.remove(bugId)
-        res.send('Deleted OK')
-    } catch (err) {
-        res.status(400).send(`Couldn't remove bug`)
-    }
+// POST-----POST-----POST-----POST-----POST-----POST-----POST-----POST-----POST-----POST-----POST-----POST
+export async function addBoard(req, res) {
+  const boardToSave = {
+    ...req.body,
+  };
+  try {
+    const savedBoard = await boardService.add(boardToSave, req.loggedinUser);
+    res.send(savedBoard);
+  } catch (err) {
+    res.status(400).send("Could't add board" + err);
+  }
 }
 
-
-// // Save
-export async function addBug(req, res) {
-    const { title, severity, description, labels } = req.body
-    const bugToSave = { title, severity: +severity, description, labels }
-
-    try {
-        const savedBug = await bugService.save(bugToSave)
-        res.send(savedBug)
-    } catch (err) {
-        res.status(400).send(`Couldn't save bug`)
-    }
+// UPDATE-----UPDATE-----UPDATE-----UPDATE-----UPDATE-----UPDATE-----UPDATE-----UPDATE-----UPDATE-----UPDATE-----UPDATE-----UPDATE
+export async function updateBoard(req, res) {
+  const { boardId } = req.params;
+  const boardToUpdate = {
+    _id: boardId,
+    ...req.body,
+  };
+  try {
+    const updatedBoard = await boardService.update(
+      boardToUpdate,
+      req.loggedinUser
+    );
+    res.send(updatedBoard);
+  } catch (err) {
+    res.status(400).send("Could't update board" + err);
+  }
 }
 
-export async function updateBug(req, res) {
-
-    const { _id, severity, description, labels } = req.body
-    const bug = await bugService.getById(_id)
-    const bugToSave = {...bug, severity: +severity, description: description, labels: labels }
-
-    try {
-        const savedBug = await bugService.save(bugToSave)
-        res.send(savedBug)
-    } catch (err) {
-        res.status(400).send(`Couldn't update bug`)
-    }
+// DELETE-----DELETE-----DELETE-----DELETE-----DELETE-----DELETE-----DELETE-----DELETE-----DELETE-----DELETE-----DELETE-----DELETE
+export async function removeBoard(req, res) {
+  const { boardId } = req.params;
+  try {
+    const deletedCount = await boardService.remove(boardId, req.loggedinUser);
+    res.json({ message: `Bug Deleted: ${boardId}  `, deletedCount });
+  } catch (err) {
+    res.status(400).send("Could't remove board " + err);
+  }
 }

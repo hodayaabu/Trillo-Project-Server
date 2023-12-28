@@ -1,12 +1,18 @@
-import express from 'express'
-import { addBug, getBug, getBugs, removeBug, updateBug } from './board.controller.js'
+import express from "express";
+import {
+  addBoard,
+  getBoard,
+  getBoards,
+  removeBoard,
+  updateBoard,
+} from "./board.controller.js";
 
-const router = express.Router()
+const router = express.Router();
 
-router.get('/', getBugs)
-router.get('/:bugId', getBug)
-router.delete('/:bugId', removeBug)
-router.post('/', addBug)
-router.put('/', updateBug)
+router.get("/", getBoards);
+router.get("/:boardId", getBoard);
+router.delete("/:boardId", removeBoard);
+router.post("/", addBoard);
+router.put("/:boardId", updateBoard);
 
-export const bugRoutes = router
+export const boardRoutes = router;
