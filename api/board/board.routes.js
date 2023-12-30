@@ -1,18 +1,13 @@
-import express from "express";
-import {
-  addBoard,
-  getBoard,
-  getBoards,
-  removeBoard,
-  updateBoard,
-} from "./board.controller.js";
+import express from "express"
+import { boardController } from "./board.controller.js"
+import { requireAuth } from '../../middlewares/requireAuth.middleware.js'
 
-const router = express.Router();
+const router = express.Router()
 
-router.get("/", getBoards);
-router.get("/:boardId", getBoard);
-router.delete("/:boardId", removeBoard);
-router.post("/", addBoard);
-router.put("/:boardId", updateBoard);
+router.get("/", requireAuth, boardController.getBoards)
+router.get("/:boardId", requireAuth, boardController.getBoard)
+router.delete("/:boardId", requireAuth, boardController.removeBoard)
+router.post("/", requireAuth, boardController.addBoard)
+router.put("/:boardId", requireAuth, boardController.updateBoard)
 
-export const boardRoutes = router;
+export const boardRoutes = router
