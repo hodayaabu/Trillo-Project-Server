@@ -4,16 +4,16 @@ import { dbService } from "../../services/db.service.js";
 import { ObjectId } from "mongodb";
 
 export const boardService = {
-  query,
-  getById,
-  remove,
-  add,
-  update,
+  query,   // LIST
+  getById, // GetByID
+  add,     // POST
+  update,  // UPDATE
+  remove,  // DELETE
 };
 
 const collectionName = "boards";
 
-// lIST-----LIST-----lIST-----LIST-----lIST-----LIST-----lIST-----LIST-----lIST-----LIST-----lIST-----LIST-----lIST-----LIST-----LIST
+// lIST
 async function query(filterBy = {}) {
   try {
     //   const criteria = _buildCriteria(filterBy);
@@ -28,7 +28,7 @@ async function query(filterBy = {}) {
   }
 }
 
-// GetByID-----GetByID-----GetByID-----GetByID-----GetByID-----GetByID-----GetByID-----GetByID-----GetByID-----GetByID-----GetByID-----GetByID
+// GetByID
 async function getById(boardId) {
   try {
     const collection = await dbService.getCollection(collectionName);
@@ -42,7 +42,7 @@ async function getById(boardId) {
   }
 }
 
-// POST-----POST-----POST-----POST-----POST-----POST-----POST-----POST-----POST-----POST-----POST-----POST
+// POST
 async function add(boardToAdd, loggedinUser) {
   try {
     const collection = await dbService.getCollection(collectionName);
@@ -54,7 +54,7 @@ async function add(boardToAdd, loggedinUser) {
   }
 }
 
-// UPDATE-----UPDATE-----UPDATE-----UPDATE-----UPDATE-----UPDATE-----UPDATE-----UPDATE-----UPDATE-----UPDATE-----UPDATE-----UPDATE
+// UPDATE
 async function update(board, loggedinUser) {
   try {
     const collection = await dbService.getCollection(collectionName);
@@ -71,7 +71,7 @@ async function update(board, loggedinUser) {
   }
 }
 
-// DELETE-----DELETE-----DELETE-----DELETE-----DELETE-----DELETE-----DELETE-----DELETE-----DELETE-----DELETE-----DELETE-----DELETE
+// DELETE
 async function remove(boardId, loggedinUser) {
   try {
     const collection = await dbService.getCollection(collectionName);
