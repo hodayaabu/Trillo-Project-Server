@@ -15,7 +15,7 @@ async function getBoards(req, res) {
     const boards = await boardService.query(filterBy);
     res.send(boards);
   } catch (err) {
-    logger.error("Couldn't get boards - " + err);
+    // logger.error("Couldn't get boards - " + err);
     res.status(400).send({ err: "Failed to get boards" });
   }
 }
@@ -27,7 +27,7 @@ async function getBoard(req, res) {
     const board = await boardService.getById(boardId);
     res.send(board);
   } catch (err) {
-    logger.error("Couldn't get board - " + err);
+    // logger.error("Couldn't get board - " + err);
     res.status(400).send({ err: "Couldn't get board" });
   }
 }
@@ -43,7 +43,7 @@ export async function addBoard(req, res) {
     const savedBoard = await boardService.add(boardToSave, req.loggedinUser);
     res.send(savedBoard);
   } catch (err) {
-    logger.error("Couldn't add board - " + err);
+    // logger.error("Couldn't add board - " + err);
     res.status(400).send({ err: "Could't add board" });
   }
 }
@@ -64,16 +64,10 @@ export async function updateBoard(req, res) {
     );
     res.send(updatedBoard);
   } catch (err) {
+    // logger.error("Couldn't update board - " + err);
     res.status(400).send("Could't update board" + err);
   }
 }
-// const { bugId } = req.params;
-//   const { severity, owner } = req.body;
-//   const bugToSave = {
-//     _id: bugId,
-//     severity: +severity,
-//     owner,
-//   };
 
 // DELETE-----DELETE-----DELETE-----DELETE-----DELETE-----DELETE-----DELETE-----DELETE-----DELETE-----DELETE-----DELETE-----DELETE
 export async function removeBoard(req, res) {
@@ -82,7 +76,7 @@ export async function removeBoard(req, res) {
     const deletedCount = await boardService.remove(boardId, req.loggedinUser);
     res.json({ message: `Board Deleted: ${boardId}`, deletedCount });
   } catch (err) {
-    logger.error("Couldn't remove board - " + err);
+    // logger.error("Couldn't remove board - " + err);
     res.status(400).send("Could't remove board");
   }
 }
