@@ -24,8 +24,10 @@ export async function getBoard(req, res) {
 
 // POST-----POST-----POST-----POST-----POST-----POST-----POST-----POST-----POST-----POST-----POST-----POST
 export async function addBoard(req, res) {
+  const { title, style } = req.body;
   const boardToSave = {
-    ...req.body,
+    title,
+    style,
   };
   try {
     const savedBoard = await boardService.add(boardToSave, req.loggedinUser);
@@ -38,10 +40,12 @@ export async function addBoard(req, res) {
 // UPDATE-----UPDATE-----UPDATE-----UPDATE-----UPDATE-----UPDATE-----UPDATE-----UPDATE-----UPDATE-----UPDATE-----UPDATE-----UPDATE
 export async function updateBoard(req, res) {
   const { boardId } = req.params;
+  const { _id, ...boardWithoutId } = req.body;
   const boardToUpdate = {
     _id: boardId,
-    ...req.body,
+    ...boardWithoutId,
   };
+
   try {
     const updatedBoard = await boardService.update(
       boardToUpdate,
@@ -52,6 +56,13 @@ export async function updateBoard(req, res) {
     res.status(400).send("Could't update board" + err);
   }
 }
+// const { bugId } = req.params;
+//   const { severity, owner } = req.body;
+//   const bugToSave = {
+//     _id: bugId,
+//     severity: +severity,
+//     owner,
+//   };
 
 // DELETE-----DELETE-----DELETE-----DELETE-----DELETE-----DELETE-----DELETE-----DELETE-----DELETE-----DELETE-----DELETE-----DELETE
 export async function removeBoard(req, res) {

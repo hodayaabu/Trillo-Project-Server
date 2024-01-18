@@ -12,6 +12,7 @@ export const boardService = {
 };
 
 const collectionName = "boards";
+const allowedFields = ["isStarred"];
 
 // lIST-----LIST-----lIST-----LIST-----lIST-----LIST-----lIST-----LIST-----lIST-----LIST-----lIST-----LIST-----lIST-----LIST-----LIST
 async function query(filterBy = {}) {
@@ -44,10 +45,12 @@ async function getById(boardId) {
 
 // POST-----POST-----POST-----POST-----POST-----POST-----POST-----POST-----POST-----POST-----POST-----POST
 async function add(boardToAdd, loggedinUser) {
+  const initBoard = utilService.createBoard();
+  const boardToSave = { ...initBoard, ...boardToAdd };
   try {
     const collection = await dbService.getCollection(collectionName);
-    await collection.insertOne(boardToAdd);
-    return boardToAdd;
+    await collection.insertOne(boardToSave);
+    return boardToSave;
   } catch (er) {
     loggerService.error("boardService[add] : ", err);
     throw err;
@@ -57,14 +60,23 @@ async function add(boardToAdd, loggedinUser) {
 // UPDATE-----UPDATE-----UPDATE-----UPDATE-----UPDATE-----UPDATE-----UPDATE-----UPDATE-----UPDATE-----UPDATE-----UPDATE-----UPDATE
 async function update(board, loggedinUser) {
   try {
+    const fieldsToUpdate = {};
+    // Iterate over each field in board
+    for (const field in board) {
+      // Check if the current field is in the 'allowedFields' array (top of the file)
+      if (allowedFields.includes(field)) {
+        // If it is allowed, add it to the 'fieldsToUpdate' object
+        fieldsToUpdate[field] = board[field];
+      }
+    }
     const collection = await dbService.getCollection(collectionName);
-    const fieldsToUpdate = { isStarred: board.isStarred };
-
-    await collection.updateOne(
+    const updatedBoard = await collection.findOneAndUpdate(
       { _id: new ObjectId(board._id) },
-      { $set: fieldsToUpdate }
+      { $set: fieldsToUpdate },
+      { returnDocument: "after" }
     );
-    return "Updated successfully";
+
+    return updatedBoard;
   } catch (err) {
     loggerService.error("boardService[update] : ", err);
     throw err;

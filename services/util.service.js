@@ -7,6 +7,7 @@ export const utilService = {
   download,
   httpGet,
   makeId,
+  createBoard,
 };
 
 function readJsonFile(path) {
@@ -60,6 +61,20 @@ function makeId(length = 5) {
     text += possible.charAt(Math.floor(Math.random() * possible.length));
   }
   return text;
+}
+
+function createBoard() {
+  const board = {
+    title: "",
+    isStarred: false,
+    archivedAt: null,
+    style: {},
+    labels: [],
+    members: [],
+    groups: [],
+    activities: [],
+  };
+  return board;
 }
 
 function errCatchWrapper(func) {
