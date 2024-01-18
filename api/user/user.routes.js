@@ -1,12 +1,12 @@
 import express from 'express'
-import { getUser, getUsers, deleteUser, updateUser } from './user.controller.js'
+import { userController } from './user.controller.js'
 import { requireAdmin } from '../../middlewares/requireAuth.middleware.js'
 
 const router = express.Router()
 
-router.get('/', requireAdmin, getUsers)
-router.get('/:id', requireAdmin, getUser)
-router.put('/:id', requireAdmin, updateUser)
-router.delete('/:id', requireAdmin, deleteUser)
+router.get('/', requireAdmin, userController.getUsers)
+router.get('/:id', requireAdmin, userController.getUser)
+router.put('/:id', requireAdmin, userController.updateUser)
+router.delete('/:id', requireAdmin, userController.deleteUser)
 
 export const userRoutes = router

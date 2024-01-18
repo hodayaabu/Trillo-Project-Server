@@ -21,7 +21,7 @@ if (process.env.NODE_ENV === "production") {
 } else {
   const corsOptions = {
     origin: [
-      "http://127.0.0.1:3000",
+      "http://127.0.0.1:3000",  // ASK - What are those ports (3000, 5173)?
       "http://localhost:3000",
       "http://127.0.0.1:5173",
       "http://localhost:5173",
