@@ -4,15 +4,15 @@ import { dbService } from "../../services/db.service.js";
 import { ObjectId } from "mongodb";
 
 export const boardService = {
-  query,   // LIST
+  query, // LIST
   getById, // GetByID
-  add,     // POST
-  update,  // UPDATE
-  remove,  // DELETE
+  add, // POST
+  update, // UPDATE
+  remove, // DELETE
 };
 
 const collectionName = "boards";
-const allowedFields = ["isStarred"];
+const allowedFields = ["isStarred", "groups", "labels", "members"];
 
 // lIST
 async function query(filterBy = {}) {

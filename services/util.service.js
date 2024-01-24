@@ -68,6 +68,7 @@ function createBoard() {
     title: "",
     isStarred: false,
     archivedAt: null,
+    createdBy: {},
     style: {},
     labels: [],
     members: [],
