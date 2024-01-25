@@ -9,7 +9,7 @@ import { setupAsyncLocalStorage } from "./middlewares/setupAls.middleware.js";
 import { socketService } from "./services/socket.service.js";
 
 import { boardRoutes } from "./api/board/board.routes.js";
-// import { userRoutes } from "./api/user/user.routes.js";
+import { userRoutes } from "./api/user/user.routes.js";
 // import { authRoutes } from "./api/auth/auth.routes.js";
 
 const app = express();
@@ -21,7 +21,7 @@ if (process.env.NODE_ENV === "production") {
 } else {
   const corsOptions = {
     origin: [
-      "http://127.0.0.1:3000",  // ASK - What are those ports (3000, 5173)?
+      "http://127.0.0.1:3000", // ASK - What are those ports (3000, 5173)?
       "http://localhost:3000",
       "http://127.0.0.1:5173",
       "http://localhost:5173",
@@ -41,7 +41,7 @@ app.all("*", setupAsyncLocalStorage); // ASK - Will it always keep searching for
 
 // Routes
 app.use("/api/board", boardRoutes);
-// app.use('/api/user', userRoutes)
+app.use("/api/user", userRoutes);
 // app.use('/api/auth', authRoutes)
 
 // Fallback route

@@ -8,7 +8,18 @@ export const utilService = {
   httpGet,
   makeId,
   createBoard,
+  getEmptyUser,
 };
+
+function getEmptyUser() {
+  return {
+    username: "",
+    fullname: "",
+    email: "",
+    password: "",
+    imgUrl: null,
+  };
+}
 
 function readJsonFile(path) {
   const str = fs.readFileSync(path, "utf8");
