@@ -10,7 +10,7 @@ import { socketService } from "./services/socket.service.js";
 
 import { boardRoutes } from "./api/board/board.routes.js";
 import { userRoutes } from "./api/user/user.routes.js";
-// import { authRoutes } from "./api/auth/auth.routes.js";
+import { authRoutes } from "./api/auth/auth.routes.js";
 
 const app = express();
 const server = http.createServer(app); // ASK - Changes in the app will affect the server. How?
@@ -42,7 +42,7 @@ app.all("*", setupAsyncLocalStorage); // ASK - Will it always keep searching for
 // Routes
 app.use("/api/board", boardRoutes);
 app.use("/api/user", userRoutes);
-// app.use('/api/auth', authRoutes)
+app.use('/api/auth', authRoutes)
 
 // Fallback route
 app.get("/**", (req, res) => {

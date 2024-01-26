@@ -55,3 +55,15 @@ export async function addUser(req, res) {
     res.status(400).send({ err: "Could't add user" });
   }
 }
+
+export async function updateUser(req, res) {
+
+  const { _id, fullname, username, password, email, imgUrl = null, mentions = null } = req.body
+  const userToSave = { _id, fullname, username, email, password, imgUrl, mentions }
+  try {
+    const savedUser = await userService.update(userToSave)
+    res.send(savedUser)
+  } catch (err) {
+    res.status(400).send(`Couldn't save user`)
+  }
+}

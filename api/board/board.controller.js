@@ -1,15 +1,7 @@
 import { boardService } from "./board.service.js";
 
-export const boardController = {
-  getBoards, // LIST
-  getBoard, // GetByID
-  addBoard, // POST
-  updateBoard, // UPDATE
-  removeBoard, // DELETE
-};
-
 // lIST
-async function getBoards(req, res) {
+export async function getBoards(req, res) {
   try {
     let filterBy = {};
     const boards = await boardService.query(filterBy);
@@ -21,7 +13,7 @@ async function getBoards(req, res) {
 }
 
 // GetByID
-async function getBoard(req, res) {
+export async function getBoard(req, res) {
   const { boardId } = req.params;
   try {
     const board = await boardService.getById(boardId);

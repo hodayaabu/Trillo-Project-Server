@@ -11,6 +11,8 @@ export const userService = {
   getById,
   remove,
   add,
+  update,
+  getByUsername
 };
 
 async function query() {
@@ -28,8 +30,10 @@ async function query() {
 async function getById(userId) {
   try {
     const collection = await dbService.getCollection(collectionName);
+
     const user = collection.findOne({ _id: new ObjectId(userId) });
     if (!user) throw `Couldnt find a bug with id: ${userId}`;
+
     return user;
   } catch (err) {
     logger.error("userService[getById] : " + err);
@@ -37,13 +41,20 @@ async function getById(userId) {
   }
 }
 
-// async function getByUsername(username) {
-//   return users.find((user) => user.username === username);
-// }
+async function getByUsername(username) {
+  const collection = await dbService.getCollection(collectionName);
+  const user = collection.findOne({ username });
+  if (!user) throw `Couldnt find a user with id: ${username}`;
+  return user;
+}
 
 async function remove(userId) {
   try {
     const collection = await dbService.getCollection(collectionName);
+
+    const user = collection.findOne({ _id: new ObjectId(userId) });
+    if (!user) throw `Couldnt find a user: ${username}`;
+
     const { deletedCount } = await collection.deleteOne({
       _id: new ObjectId(userId),
     });
@@ -57,6 +68,10 @@ async function remove(userId) {
 async function add(userToAdd) {
   try {
     const collection = await dbService.getCollection(collectionName);
+
+    const user = collection.findOne({ username: userToAdd.username });
+    if (user) throw `user ${userToAdd.username} already exists`;
+
     await collection.insertOne(userToAdd);
     return userToAdd;
   } catch (er) {
@@ -65,21 +80,30 @@ async function add(userToAdd) {
   }
 }
 
-// async function update(user) {
-//   try {
-//     const collection = await dbService.getCollection(collectionName);
-//     const fieldsToUpdate = { score: user.score };
+async function update(user) {
+  try {
+    // peek only updatable properties
+    const userToSave = {
+      _id: new ObjectId(user._id), // needed for the returnd obj
+      username: user.username,
+      fullname: user.fullname,
+      email: user.email,
+      imgUrl: user.imgUrl,
+      mentions: user.mentions
+    }
 
-//     await collection.updateOne(
-//       { _id: new ObjectId(user._id) },
-//       { $set: fieldsToUpdate }
-//     );
+    const collection = await dbService.getCollection(collectionName)
 
-//   } catch (err) {
-//     loggerService.error(err);
-//     throw err;
-//   }
-// }
+    const user = collection.findOne({ _id: new ObjectId(user._id) });
+    if (!user) throw `Couldnt find a bug with id: ${user._id}`;
+
+    await collection.updateOne({ _id: userToSave._id }, { $set: userToSave })
+    return userToSave
+  } catch (err) {
+    logger.error(`cannot update user ${user._id}`, err)
+    throw err
+  }
+}
 
 // function _saveUsersToFile() {
 //   return new Promise((resolve, reject) => {
