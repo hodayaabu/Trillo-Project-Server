@@ -12,7 +12,7 @@ export const userService = {
   remove,
   add,
   update,
-  getByUsername
+  getByUsername,
 };
 
 async function query() {
