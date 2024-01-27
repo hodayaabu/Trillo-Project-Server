@@ -6,6 +6,7 @@ import { ObjectId } from "mongodb";
 export const boardService = {
   query, // LIST
   getById, // GetByID
+  getUserBoards,
   add, // POST
   update, // UPDATE
   remove, // DELETE
@@ -39,6 +40,17 @@ async function getById(boardId) {
     return board;
   } catch (err) {
     logger.error("boardService[getByID] : ", err);
+    throw err;
+  }
+}
+
+async function getUserBoards(userId) {
+  try {
+    const collection = await dbService.getCollection(collectionName);
+    const userBoards = collection.find({ createdBy: userId }).toArray()
+    return userBoards;
+  } catch (err) {
+    logger.error("userService[getUserBoards] : " + err);
     throw err;
   }
 }

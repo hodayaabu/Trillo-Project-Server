@@ -12,7 +12,7 @@ export async function login(req, res) {
     res.json(user)
   } catch (err) {
     logger.error("Failed to Login  - " + err)
-    res.status(401).send({ err: "Failed to Login" })
+    res.status(401).send({ err })
   }
 }
 

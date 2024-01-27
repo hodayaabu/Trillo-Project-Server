@@ -24,6 +24,18 @@ export async function getBoard(req, res) {
   }
 }
 
+export async function getUserBoards(req, res) {
+  const { userId } = req.params
+
+  try {
+    const userBoards = await boardService.getUserBoards(userId)
+    res.send(userBoards)
+  } catch (err) {
+    res.status(400).send(`Couldn't get the user boards, ${err}`)
+    console.log(err);
+  }
+}
+
 // POST-----POST-----POST-----POST-----POST-----POST-----POST-----POST-----POST-----POST-----POST-----POST
 export async function addBoard(req, res) {
   const { title, style } = req.body;

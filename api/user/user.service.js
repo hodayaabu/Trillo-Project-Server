@@ -32,7 +32,7 @@ async function getById(userId) {
     const collection = await dbService.getCollection(collectionName);
 
     const user = collection.findOne({ _id: new ObjectId(userId) });
-    if (!user) throw `Couldnt find a bug with id: ${userId}`;
+    if (!user) throw `Couldnt find a user with id: ${userId}`;
 
     return user;
   } catch (err) {
