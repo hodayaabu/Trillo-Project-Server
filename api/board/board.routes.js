@@ -4,17 +4,17 @@ import { requireAuth } from '../../middlewares/requireAuth.middleware.js'
 
 const router = express.Router()
 
-// router.get("/", requireAuth,getBoards)
-// router.get("/:boardId", requireAuth, boardController.getBoard)
-// router.delete("/:boardId", requireAuth, boardController.removeBoard)
-// router.post("/", requireAuth, boardController.addBoard)
-// router.put("/:boardId", requireAuth, boardController.updateBoard)
+// router.get("/", requireAuth, getBoards)
+// router.get("/:boardId", requireAuth, getBoard)
+// router.delete("/:boardId", requireAuth, removeBoard)
+// router.post("/", requireAuth, addBoard)
+// router.put("/:boardId", requireAuth, updateBoard)
 
-router.get("/", getBoards)
-router.get("/home/:userId", getUserBoards);
-router.get("/:boardId", getBoard)
-router.delete("/:boardId", removeBoard)
-router.post("/", addBoard)
-router.put("/:boardId", updateBoard)
+router.get("/", requireAuth, getBoards)
+router.get("/home/:userId", requireAuth, getUserBoards);
+router.get("/:boardId", requireAuth, getBoard)
+router.delete("/:boardId", requireAuth, removeBoard)
+router.post("/", requireAuth, addBoard)
+router.put("/:boardId", requireAuth, updateBoard)
 
 export const boardRoutes = router
