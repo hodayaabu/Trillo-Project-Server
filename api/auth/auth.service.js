@@ -35,8 +35,8 @@ async function login(username, password) {
   if (!user) throw "Unkown username";
 
   //  un-comment for real login
-  const match = await bcrypt.compare(password, user.password)
-  if (!match) throw 'Invalid username or password'
+  const match = await bcrypt.compare(password, user.password);
+  if (!match) throw "Invalid username or password";
 
   // Removing passwords and personal data
   const miniUser = {
@@ -44,14 +44,22 @@ async function login(username, password) {
     username: user.username,
     fullname: user.fullname,
     imgUrl: user.imgUrl,
-    email: user.email
+    email: user.email,
     // Additional fields required for miniuser
   };
   return miniUser;
 }
 
-async function signup({ username, password, fullname, email, imgUrl, mentions }) {
-  const saltRounds = 10
+async function signup({
+  username,
+  password,
+  fullname,
+  email,
+  imgUrl,
+  mentions,
+}) {
+  const saltRounds = 10;
+
   logger.debug(
     `auth.service - signup with username: ${username}, fullname: ${fullname}`
   );
@@ -59,8 +67,16 @@ async function signup({ username, password, fullname, email, imgUrl, mentions })
     throw "Missing required signup information";
 
   const userExist = await userService.getByUsername(username);
+
   if (userExist) throw "Username already taken";
 
   const hash = await bcrypt.hash(password, saltRounds);
-  return userService.add({ username, password: hash, fullname, email, imgUrl, mentions });
+  return userService.add({
+    username,
+    password: hash,
+    fullname,
+    email,
+    imgUrl,
+    mentions,
+  });
 }
