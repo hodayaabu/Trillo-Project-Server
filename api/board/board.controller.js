@@ -41,7 +41,7 @@ export async function addBoard(req, res) {
   let { title, style, createdBy } = req.body;
   if (!style) {
     style = {
-      backgroundImage: "url(public/grad-bg-images/light-blue.svg)",
+      backgroundImage: "url(/grad-bg-images/light-blue.svg)",
     };
   }
 
