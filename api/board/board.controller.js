@@ -27,23 +27,30 @@ export async function getBoard(req, res) {
 }
 
 export async function getUserBoards(req, res) {
-  const { userId } = req.params
+  const { userId } = req.params;
 
   try {
-    const userBoards = await boardService.getUserBoards(userId)
-    res.send(userBoards)
+    const userBoards = await boardService.getUserBoards(userId);
+    res.send(userBoards);
   } catch (err) {
-    res.status(400).send(`Couldn't get the user boards, ${err}`)
+    res.status(400).send(`Couldn't get the user boards, ${err}`);
     console.log(err);
   }
 }
 
 // POST-----POST-----POST-----POST-----POST-----POST-----POST-----POST-----POST-----POST-----POST-----POST
 export async function addBoard(req, res) {
-  const { title, style } = req.body;
+  let { title, style, createdBy } = req.body;
+  if (!style) {
+    style = {
+      backgroundImage: "url(public/grad-bg-images/light-blue.svg)",
+    };
+  }
+
   const boardToSave = {
     title,
     style,
+    createdBy,
   };
   const store = asyncLocalStorage.getStore()
   try {
