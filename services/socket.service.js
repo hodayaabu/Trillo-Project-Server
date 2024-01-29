@@ -24,6 +24,9 @@ function setupSocketAPI(httpServer) {
         socket.on('disconnect', socket => {
             logger.info(`Socket disconnected [id: ${socket.id}]`)
         })
+        // socket.on('update-board-list', () => {
+
+        // })
     })
 }
 
