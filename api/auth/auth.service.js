@@ -45,6 +45,7 @@ async function login(username, password) {
     fullname: user.fullname,
     imgUrl: user.imgUrl,
     email: user.email,
+    isAdmin: user.isAdmin,
     // Additional fields required for miniuser
   };
   return miniUser;
