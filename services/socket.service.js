@@ -8,6 +8,7 @@ export const socketService = {
     emitToUser,         // emit to a specific user (if currently active in system)
     broadcast,          // Send to all sockets BUT not the current socket, if found
     broadcastForLabel,  // Send to all sockets BUT not the current socket, if found - For a specific label
+    broadcastBoardWatchers,  // Send to all sockets who watch the board BUT not the current socket
 }
 
 
@@ -24,11 +25,27 @@ function setupSocketAPI(httpServer) {
         socket.on('disconnect', socket => {
             logger.info(`Socket disconnected [id: ${socket.id}]`)
         })
-        // socket.on('update-board-list', () => {
-
-        // })
+        // userId
+        socket.on('set-user-socket', userId => {
+            logger.info(`Setting socket.userId = ${userId} for socket [id: ${socket.id}]`)
+            socket.userId = userId
+        })
+        socket.on('unset-user-socket', () => {
+            logger.info(`Removing socket.userId for socket [id: ${socket.id}]`)
+            delete socket.userId
+        })
+        // boardId
+        socket.on('set-board-socket', boardId => {
+            logger.info(`Setting socket.boardId = ${boardId} for socket [id: ${socket.id}]`)
+            socket.boardId = boardId
+        })
+        socket.on('unset-board-socket', () => {
+            logger.info(`Removing socket.boardId for socket [id: ${socket.id}]`)
+            delete socket.boardId
+        })
     })
 }
+
 
 
 function emitTo({ msgType, data, label }) {
@@ -60,6 +77,16 @@ async function broadcast({ msgType, data, userId }) {
     } else {
         logger.info(`Emit to all`)
         gIo.emit(msgType, data)
+    }
+}
+
+async function broadcastBoardWatchers({msgType, data, userId, boardId}) {
+    const sockets = await gIo.fetchSockets()
+    const wantedSockets = sockets.filter((soc) => soc?.userId !== userId && soc?.boardId === boardId)
+    logger.info(`Broadcast to all who watch board ${boardId} excluding user`)
+    for (let soc in wantedSockets) {
+        logger.info(`Emit to ${soc}`)
+        soc.emit(msgType, data)
     }
 }
 
