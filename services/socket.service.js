@@ -84,7 +84,7 @@ async function broadcastBoardWatchers({msgType, data, userId, boardId}) {
     const sockets = await gIo.fetchSockets()
     const wantedSockets = sockets.filter((soc) => soc?.userId !== userId && soc?.boardId === boardId)
     logger.info(`Broadcast to all who watch board ${boardId} excluding user`)
-    for (let soc in wantedSockets) {
+    for (let soc of wantedSockets) {
         logger.info(`Emit to ${soc}`)
         soc.emit(msgType, data)
     }
