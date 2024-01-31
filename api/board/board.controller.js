@@ -1,6 +1,7 @@
 import { socketService } from "../../services/socket.service.js";
 import { boardService } from "./board.service.js";
 import { asyncLocalStorage } from "../../services/als.service.js";
+import { userService } from "../user/user.service.js";
 
 // lIST
 export async function getBoards(req, res) {
@@ -40,7 +41,9 @@ export async function getUserBoards(req, res) {
 
 // POST-----POST-----POST-----POST-----POST-----POST-----POST-----POST-----POST-----POST-----POST-----POST
 export async function addBoard(req, res) {
-  let { title, style, createdBy } = req.body;
+  let { title, style } = req.body;
+  var user = await userService.getByUsername(req.loggedinUser.username);
+
   if (!style) {
     style = {
       backgroundImage: "url(/grad-bg-images/light-blue.svg)",
@@ -50,12 +53,13 @@ export async function addBoard(req, res) {
   const boardToSave = {
     title,
     style,
-    createdBy,
+    createdBy: user,
   };
+
   const store = asyncLocalStorage.getStore()
   try {
     const savedBoard = await boardService.add(boardToSave, req.loggedinUser);
-    socketService.broadcast({msgType: "board-add", data: "", userId: store.loggedinUser})
+    socketService.broadcast({ msgType: "board-add", data: "", userId: store.loggedinUser })
     res.send(savedBoard);
   } catch (err) {
     // logger.error("Couldn't add board - " + err);
@@ -78,7 +82,7 @@ export async function updateBoard(req, res) {
       boardToUpdate,
       req.loggedinUser
     );
-    socketService.broadcastBoardWatchers({msgType: "board-update", data: "", userId: store.loggedinUser, boardId: boardId})
+    socketService.broadcastBoardWatchers({ msgType: "board-update", data: "", userId: store.loggedinUser, boardId: boardId })
     res.send(updatedBoard);
   } catch (err) {
     // logger.error("Couldn't update board - " + err);
@@ -92,7 +96,7 @@ export async function removeBoard(req, res) {
   const store = asyncLocalStorage.getStore()
   try {
     const deletedCount = await boardService.remove(boardId, req.loggedinUser);
-    socketService.broadcast({msgType: "board-remove", data: "", userId: store.loggedinUser})
+    socketService.broadcast({ msgType: "board-remove", data: "", userId: store.loggedinUser })
     res.json({ message: `Board Deleted: ${boardId}`, deletedCount });
   } catch (err) {
     // logger.error("Couldn't remove board - " + err);
