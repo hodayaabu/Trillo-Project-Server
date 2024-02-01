@@ -53,7 +53,7 @@ export async function addBoard(req, res) {
   const boardToSave = {
     title,
     style,
-    createdBy: user,
+    createdBy: { _id: user._id, fullname: user.fullname },
   };
 
   const store = asyncLocalStorage.getStore()
