@@ -4,17 +4,24 @@ Welcome to the Trillo Website! This web application allows you to simulate and e
 
 I am excited to announce the completion of my final project- Trillo, a cutting-edge project management platform designed to assist in the way you collaborate and manage tasks. 🌐✨
 
-📌 What is Trillo?
+### 📌 What is Trillo?
 Trillo is a powerful and intuitive project management tool that brings the best features of Trello right to your fingertips. Whether you're working on a team project, planning an event, or organizing your personal tasks, our platform provides the perfect space for seamless collaboration.
 
-🔧 Key Features:
+### 🔧 Key Features:
 ✅ Kanban-style Boards: Visualize your projects with customizable boards.
+<br/>
 ✅ Lists and Cards: Organize tasks effortlessly and stay on top of your to-do list.
+<br/>
 ✅ Drag-and-Drop Functionality: Streamline your workflow with easy task management.
+<br/>
 ✅ Task Assignments: Assign tasks to team members and track progress.
+<br/>
 ✅ Due Dates and Reminders: Never miss a deadline with built-in reminders.
+<br/>
 ✅ Collaborative Comments: Communicate efficiently with threaded comments on cards.
+<br/>
 ✅ File Attachments: Attach files directly to cards for easy access.
+<br/>
 
 Tech Stack (MERN) - MongoDB, Express, React, Node.js, Socket.IO, Sass, Redux, and more.
 3rd-party libraries like react-beautiful-dnd, fast-average-color... were used as well, and integrated Unsplash API for the background images.
